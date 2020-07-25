@@ -1,0 +1,28 @@
+server:
+    port: 8081
+ibm:
+    mq:
+        hostName: localhost        
+        queueManager: QM1
+        channel: DEV.ADMIN.SVRCONN
+        conn-name: localhost(1414)
+        portNumber: 1444
+        user: admin
+        password: passw0rd
+        propertyKey: WMQ_TARGET_CLIENT
+        propertyName: JMS
+        timeout: 900000
+        propertyExpiry: WMQ_EXPIRY
+        expiry: 600
+        ssl-cipher-suite: TLS_RSA_WITH_AES_128_CBC_SHA256
+        #queueRead: WWW_CGCAWSPERSONASSES_WWW.QL.RES
+        #queueWrite: queue:///WWW_CGCAWSPERSONASSES_WWW.QR.REQ?targetClient=1
+spring:
+    jms:
+        pub-sub-domain: true
+
+app:
+    appname: CGC_POC_MQ
+    ccdtfile: /Users/giovanyvillegas/Documents/workspace_JAVA/reactivemq/src/main/resources/ccdt.json
+
+
