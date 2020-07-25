@@ -3,16 +3,14 @@ package co.com.bancolombia.reactivemq;
 
 import co.com.bancolombia.reactivemq.service.SendMessageService;
 import com.ibm.mq.jms.MQConnectionFactory;
-import com.ibm.msg.client.jms.JmsConnectionFactory;
-import com.ibm.msg.client.jms.JmsFactoryFactory;
-import com.ibm.msg.client.wmq.WMQConstants;
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import javax.jms.JMSException;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 
 
@@ -39,25 +37,20 @@ public class AppConfig {
     @Bean
     public MQConnectionFactory ccdtConnectionFactory() throws JMSException, IOException{
 
-        JmsFactoryFactory factory = JmsFactoryFactory.getInstance(WMQConstants.WMQ_PROVIDER);
-        JmsConnectionFactory connectionFactoryIbm= factory.createConnectionFactory();
 
-        connectionFactoryIbm.setStringProperty(WMQConstants.USERID,user);
-        connectionFactoryIbm.setStringProperty(WMQConstants.PASSWORD,password );
-        connectionFactoryIbm.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER,queueManager );
-        connectionFactoryIbm.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQConstants.WMQ_CM_CLIENT);
+        MQQueueConnectionFactory mqQueueConnectionFactory = new MQQueueConnectionFactory();
+        mqQueueConnectionFactory.setStringProperty("XMSC_USERID","admin" );
+        mqQueueConnectionFactory.setStringProperty("XMSC_PASSWORD","passw0rd" );
+
+        mqQueueConnectionFactory.setHostName("localhost");
+        mqQueueConnectionFactory.setChannel("DEV.ADMIN.SVRCONN");//communications link
+        mqQueueConnectionFactory.setPort(1414);
+        mqQueueConnectionFactory.setQueueManager("QM1");//service provider
+        mqQueueConnectionFactory.setTransportType(JMSC.MQJMS_TP_CLIENT_MQ_TCPIP);
 
 
-        System.out.println(user);
-        System.out.println(password);
 
-        MQConnectionFactory mqConnection = (MQConnectionFactory) connectionFactoryIbm;
-        mqConnection.setClientReconnectOptions(WMQConstants.WMQ_CLIENT_RECONNECT);
-        URL ccdtUrl = new File(ccdtfile).toURI().toURL();
-        mqConnection.setCCDTURL(ccdtUrl);
-        mqConnection.setTransportType(WMQConstants.WMQ_CM_CLIENT);
-        mqConnection.setAppName(appname);
-        return mqConnection;
+        return mqQueueConnectionFactory;
 
     }
 

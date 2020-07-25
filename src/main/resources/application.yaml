@@ -23,6 +23,4 @@ spring:
 
 app:
     appname: CGC_POC_MQ
-    ccdtfile: /Users/giovanyvillegas/Documents/workspace_JAVA/reactivemq/src/main/resources/ccdt.json
-
-
+    ccdtfile: /Users/ferneyenriqueortizlaverde/Documents/Nube/Lab/MQ/reactivo/mqreactive/src/main/resources/ccdt.json

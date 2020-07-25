@@ -22,7 +22,21 @@ public class Handler {
             Mono<String> response = service.send(message);
             return ServerResponse.ok()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Mono.just(response), String.class);
+                    .body(response, String.class);
+        }catch(JMSException e){
+
+            return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Mono.just( e.getLinkedException()), String.class);
+        }
+    }
+
+    public Mono<ServerResponse> getMessage(ServerRequest request){
+        try {
+            Mono<String> response = service.recv();
+            return ServerResponse.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response, String.class);
         }catch(JMSException e){
 
             return ServerResponse.ok()

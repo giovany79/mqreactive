@@ -18,7 +18,7 @@ public class SendMessageService {
         Connection producerConnection = mqConnectionFactory.createConnection();
         producerConnection.start();
         Session producerSession = producerConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination producerDestination = producerSession.createQueue("Q1");
+        Destination producerDestination = producerSession.createQueue("Q1PUEBA");
         MessageProducer producer = producerSession.createProducer(producerDestination);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         final TextMessage producerMessage = producerSession.createTextMessage(message);
@@ -28,6 +28,23 @@ public class SendMessageService {
         producerSession.close();
         producerConnection.close();
         return Mono.just("Message sent.");
+    }
+
+    public Mono<String> recv() throws JMSException {
+        System.out.println("Llego aqui");
+        Connection consumerConnection = mqConnectionFactory.createConnection();
+        consumerConnection.start();
+        Session consumerSession = consumerConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Destination consumerDestination = consumerSession.createQueue("Q1PUEBA");
+        MessageConsumer consumer = consumerSession.createConsumer(consumerDestination);
+        Message consumerMessage = consumer.receive(1000);
+        TextMessage consumerTextMessage = (TextMessage) consumerMessage;
+        System.out.println("Message received: " + consumerTextMessage.getText());
+        // Clean up the consumer.
+        consumer.close();
+        consumerSession.close();
+        consumerConnection.close();
+        return Mono.just(consumerTextMessage.getText());
     }
 
 }
